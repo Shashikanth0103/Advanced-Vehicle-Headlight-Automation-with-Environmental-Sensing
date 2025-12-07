@@ -80,4 +80,4 @@ This project automates a vehicle’s headlight system using real-time environmen
 ## 📸 Photos
 
 ![Prototype Setup](https://github.com/Shashikanth0103/Advanced-Vehicle-Headlight-Automation-with-Environmental-Sensing/blob/main/Prototype%20Setup.jpg)
-![Sensor Module](images/sensor_unit.jpg)
+![Foglight](https://github.com/Shashikanth0103/Advanced-Vehicle-Headlight-Automation-with-Environmental-Sensing/blob/main/vehicle%20navigating%20through%20foggy%20conditions%20with%20fog%20lights%20activated%20automatically%20by%20System.png)
