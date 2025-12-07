@@ -1,0 +1,230 @@
+#include <Wire.h>  
+#include <LiquidCrystal_I2C.h> 
+#include "DHT.h" 
+int ldr = A0; 
+int wide_beam = A1; 
+int red_beam = A2; 
+int high_beam1 = 2; 
+int high_beam2 = 3; 
+int low_beam1 = 4; 
+int low_beam2 = 5; 
+int fog_lamp1 = 6; 
+int fog_lamp2 = 7; 
+int buzzer = 8; 
+int horn_pin = 9; 
+int trigPin = 11; 
+int echoPin = 12; 
+int emr_pin = 13; 
+long duration, cm; 
+int totalColumns = 16; 
+int totalRows = 2; 
+#define DHTPIN 10  
+#define DHTTYPE DHT11 
+int normal_mode = 1; 
+int city_mode = 0; 
+int fog_mode = 0; 
+int emergency_mode = 0; 
+int speed = 50; 
+String scrollingMessage = "Sensor-Based Automatic Headlight for Automotive 
+Applications"; 
+DHT dht(DHTPIN, DHTTYPE); 
+Dept. of ECE, JSSATEB                                               
+Page 41 
+LiquidCrystal_I2C lcd(0x27,16,2); 
+ 
+void city(){ 
+  digitalWrite(high_beam1, LOW); 
+  digitalWrite(high_beam2, LOW); 
+  digitalWrite(low_beam1, HIGH); 
+  digitalWrite(low_beam2, HIGH); 
+  digitalWrite(fog_lamp1, LOW); 
+  digitalWrite(fog_lamp2, LOW); 
+} 
+ 
+void normal(){ 
+  digitalWrite(high_beam1, HIGH); 
+  digitalWrite(high_beam2, HIGH); 
+  digitalWrite(low_beam1, LOW); 
+  digitalWrite(low_beam2, LOW); 
+  digitalWrite(fog_lamp1, LOW); 
+  digitalWrite(fog_lamp2, LOW); 
+} 
+ 
+void fog(){ 
+  digitalWrite(high_beam1, LOW); 
+  digitalWrite(high_beam2, LOW); 
+  digitalWrite(low_beam1, LOW); 
+  digitalWrite(low_beam2, LOW); 
+  digitalWrite(fog_lamp1, HIGH); 
+  digitalWrite(fog_lamp2, HIGH); 
+} 
+ 
+void emergency(){ 
+  digitalWrite(high_beam1, HIGH); 
+  digitalWrite(high_beam2, HIGH); 
+  digitalWrite(low_beam1, HIGH); 
+ 
+  digitalWrite(low_beam2, HIGH); 
+  digitalWrite(fog_lamp1, LOW); 
+  digitalWrite(fog_lamp2, LOW); 
+  digitalWrite(wide_beam,LOW); 
+  digitalWrite(red_beam,HIGH); 
+  tone(buzzer,500); 
+  delay(500); 
+  digitalWrite(high_beam1, LOW); 
+  digitalWrite(high_beam2, LOW); 
+  digitalWrite(low_beam1, LOW); 
+  digitalWrite(low_beam2, LOW); 
+  digitalWrite(fog_lamp1, LOW); 
+  digitalWrite(fog_lamp2, LOW); 
+  digitalWrite(wide_beam,HIGH); 
+  digitalWrite(red_beam,LOW); 
+  noTone(buzzer); 
+  delay(500); 
+} 
+ 
+void horn(){ 
+  digitalWrite(high_beam1, HIGH); 
+  digitalWrite(high_beam2, HIGH); 
+  digitalWrite(low_beam1, LOW); 
+  digitalWrite(low_beam2, LOW); 
+  digitalWrite(fog_lamp1, LOW); 
+  digitalWrite(fog_lamp2, LOW); 
+  tone(buzzer,1000); 
+  delay(500); 
+  digitalWrite(high_beam1, LOW); 
+  digitalWrite(high_beam2, LOW); 
+  digitalWrite(low_beam1, LOW); 
+  digitalWrite(low_beam2, LOW); 
+  digitalWrite(fog_lamp1, LOW); 
+  
+ digitalWrite(fog_lamp2, LOW); 
+  noTone(buzzer); 
+  delay(500); 
+} 
+ 
+long ultra(){ 
+  digitalWrite(trigPin, LOW); 
+  delayMicroseconds(5); 
+  digitalWrite(trigPin, HIGH); 
+  delayMicroseconds(10); 
+  digitalWrite(trigPin, LOW); 
+  pinMode(echoPin, INPUT); 
+  duration = pulseIn(echoPin, HIGH); 
+  cm = (duration/2) / 29.1;     // Divide by 29.1 or multiply by 0.0343 
+  Serial.print(cm); 
+  Serial.println("cm"); 
+  return cm; 
+}  
+ 
+ 
+void scrollMessage(int row, String message, int delayTime, int totalColumns) { 
+  for (int i=0; i < totalColumns; i++) { 
+    message = " " + message;   
+  }  
+  message = message + " ";  
+  for (int position = 0; position < message.length(); position++) { 
+    lcd.setCursor(0, row); 
+    lcd.print(message.substring(position, position + totalColumns)); 
+    delay(delayTime); 
+  } 
+} 
+ 
+void setup() { 
+ pinMode(wide_beam, OUTPUT); 
+  digitalWrite(wide_beam,HIGH); 
+  pinMode(red_beam, OUTPUT); 
+  pinMode(high_beam1, OUTPUT); 
+  pinMode(high_beam2, OUTPUT); 
+  pinMode(low_beam1, OUTPUT); 
+  pinMode(low_beam2, OUTPUT); 
+  pinMode(fog_lamp1, OUTPUT); 
+  pinMode(fog_lamp2, OUTPUT); 
+  pinMode(buzzer, OUTPUT); 
+  pinMode(trigPin, OUTPUT); 
+  pinMode(echoPin, INPUT); 
+  pinMode(horn_pin, INPUT_PULLUP); 
+  pinMode(emr_pin, INPUT_PULLUP); 
+  Serial.begin(9600); 
+  dht.begin(); 
+  lcd.init(); 
+  lcd.backlight(); 
+  scrollMessage(1, scrollingMessage, 250, totalColumns); 
+} 
+ 
+void loop() { 
+  delay(2000); 
+  lcd.clear(); 
+  while(Serial.available()>0){ 
+++++++++++++++++++++    speed = Serial.parseInt(); 
+  } 
+  Serial.print("Speed: "); 
+  Serial.println(speed); 
+  if(speed > 75){ 
+    digitalWrite(wide_beam,LOW); 
+  } 
+  else{ 
+
+  
+   digitalWrite(wide_beam,HIGH); 
+  } 
+  int distance = ultra(); 
+  int light_value = analogRead(ldr); 
+  if (distance < 25 || light_value < 250){ 
+    city_mode = 1; 
+  } 
+  else{ 
+    city_mode = 0; 
+  } 
+  float h = dht.readHumidity(); 
+  if (h > 75){ 
+    fog_mode = 1; 
+  } 
+  else{ 
+    fog_mode = 0; 
+  } 
+  Serial.print(F("Humidity: ")); 
+  Serial.println(h); 
+ 
+  int emergency_mode = !digitalRead(emr_pin); 
+  int horn_mode = !digitalRead(horn_pin); 
+  Serial.print(F("Light: ")); 
+  Serial.println(light_value); 
+   
+  if(city_mode == 1 && fog_mode == 0 && emergency_mode == 0 && horn_mode ==0){ 
+    city(); 
+    Serial.println("Low Beam Mode"); 
+    lcd.print("Low Beam Mode"); 
+  } 
+  else if(city_mode == 0 && fog_mode == 1 && emergency_mode == 0 && horn_mode 
+==0){ 
+    fog(); 
+                                          
+   
+  Serial.println("Fog Mode"); 
+    lcd.print("Fog Mode"); 
+  } 
+  else if(city_mode == 0 && fog_mode == 0 && emergency_mode == 1 && horn_mode 
+==0){ 
+    emergency(); 
+    Serial.println("Emergency Mode"); 
+    lcd.print("Emergency Mode"); 
+  } 
+  else if(city_mode == 0 && fog_mode == 0 && emergency_mode == 0 && horn_mode 
+==1){ 
+    horn(); 
+    Serial.println("Ghat Mode"); 
+    lcd.print("Ghat Mode"); 
+  } 
+  else{ 
+    normal(); 
+    Serial.println("High Beam Mode"); 
+    lcd.print("High Beam Mode"); 
+  } 
+  lcd.setCursor(0,1); 
+  lcd.print("Speed:"); 
+  lcd.setCursor(6,1); 
+  lcd.print(speed); 
+  lcd.setCursor(10,1); 
+  lcd.print("km/h"); 
+}
