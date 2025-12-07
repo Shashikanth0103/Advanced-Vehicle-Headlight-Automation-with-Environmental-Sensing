@@ -82,5 +82,5 @@ This project automates a vehicle’s headlight system using real-time environmen
 ![Prototype Setup](https://github.com/Shashikanth0103/Advanced-Vehicle-Headlight-Automation-with-Environmental-Sensing/blob/main/Prototype%20Setup.jpg)
 ![Foglight](https://github.com/Shashikanth0103/Advanced-Vehicle-Headlight-Automation-with-Environmental-Sensing/blob/main/vehicle%20navigating%20through%20foggy%20conditions%20with%20fog%20lights%20activated%20automatically%20by%20System.png)
 ![Automatic headlight adjustment](https://github.com/Shashikanth0103/Advanced-Vehicle-Headlight-Automation-with-Environmental-Sensing/blob/main/Automatic%20headlight%20adjustment%20from%20high%20beam%20to%20low%20beam%20when%20an%20oncoming%20vehicle%20is%20detected.png)
-![Activation of emgerncy mode](https://github.com/Shashikanth0103/Advanced-Vehicle-Headlight-Automation-with-Environmental-Sensing/blob/main/Automatic%20headlight%20adjustment%20from%20high%20beam%20to%20low%20beam%20when%20an%20oncoming%20vehicle%20is%20detected.png)
+![Activation of emgerncy mode](https://github.com/Shashikanth0103/Advanced-Vehicle-Headlight-Automation-with-Environmental-Sensing/blob/main/Activation%20of%20emergency%20mode%20in%20a%20vehicle.png)
 
