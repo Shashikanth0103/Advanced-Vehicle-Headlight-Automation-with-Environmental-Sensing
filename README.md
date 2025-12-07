@@ -76,3 +76,8 @@ This project automates a vehicle’s headlight system using real-time environmen
 * Connect horn line or button to a digital input
 
 * Triggers high-beam flash for ghat roads
+
+## 📸 Photos
+
+![Prototype Setup](https://github.com/Shashikanth0103/Advanced-Vehicle-Headlight-Automation-with-Environmental-Sensing/blob/main/Prototype%20Setup.jpg)
+![Sensor Module](images/sensor_unit.jpg)
